@@ -70,6 +70,8 @@ const SortableItem = ({
 	const { attributes, listeners, setNodeRef, transform, transition, isOver } =
 		useSortable({ id });
 
+	const [isHovered, setIsHovered] = useState(false);
+
 	const style = {
 		transform: CSS.Transform?.toString(transform),
 		transition,
@@ -85,7 +87,9 @@ const SortableItem = ({
 			style={style}
 			{...attributes}
 			{...listeners}
-			className="flex items-center p-4 border-b border-gray-200"
+			className="flex items-center p-4 border-b border-gray-200 cursor-move relative"
+			onMouseEnter={() => setIsHovered(true)}
+			onMouseLeave={() => setIsHovered(false)}
 		>
 			<div className="w-16 h-16 rounded-md mr-4 relative">
 				<Image
@@ -98,13 +102,29 @@ const SortableItem = ({
 			</div>{" "}
 			<div>
 				<h3 className="font-semibold text-base text-[#292B36]">{title}</h3>
-				{!isDragging && !isOverlay && (
-					<div className="flex gap-1 items-center">
-						<Image src={pin} alt="location" width={16} height={16} />
-						<p className="text-gray-500">{location}</p>
-					</div>
-				)}
+				<div className="flex gap-1 items-center">
+					<Image src={pin} alt="location" width={16} height={16} />
+					<p className="text-gray-500">{location}</p>
+				</div>
 			</div>
+			{isHovered && (
+				<div className="absolute right-4 cursor-pointer text-black">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="2"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						className="w-6 h-6"
+					>
+						<circle cx="12" cy="12" r="1"></circle>
+						<circle cx="19" cy="12" r="1"></circle>
+						<circle cx="5" cy="12" r="1"></circle>
+					</svg>
+				</div>
+			)}
 		</div>
 	);
 };
@@ -163,7 +183,7 @@ const DraggableList = () => {
 			</SortableContext>
 			<DragOverlay>
 				{activeId ? (
-					<div style={{ width: "70%" }}>
+					<div style={{ width: "70%", cursor: "move" }}>
 						<div className="flex items-center p-4 border-b border-gray-200 bg-white shadow-lg">
 							<div className="w-8 h-8 rounded-md mr-4 relative">
 								<Image
